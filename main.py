@@ -1,4 +1,3 @@
-from sqlalchemy import create_engine
 import streamlit as st
 import psycopg2
 st.title("Hello")
