@@ -1,15 +1,24 @@
+from sqlalchemy import create_engine
 import streamlit as st
-import pymysql
-pymysql.install_as_MySQLdb()
+import psycopg2
 st.title("Hello")
-# Initialize connection.
-conn = st.connection('mysql', type='sql')
-tab1, tab2, tab3 = st.tabs(["Farmer", "Cultivated_areas", "Fertilizer"])
-option = st.sidebar.selectbox("Select an Operations", ("สร้าง", "อ่าน", "อัพเดท", "ลบ"))
-#farmer tab
-with tab1:
+connection_string = st.secrets.db_credentials.db_url
+# print(st.secrets.db_credentials.db_url)
+connection = psycopg2.connect(connection_string)
+cursor = connection.cursor()
+create_table = "CREATE TABLE IF NOT EXISTS farmer(id int PRIMARY KEY, name varchar(20));"
+cursor.execute(create_table)
+connection.commit()
 
-        # Perform query.
-    df = conn.query('select * from farmer;', ttl=600)
+# insert_query = "INSERT INTO farmer (id, name) VALUES (%s, %s);"
+# val = (1, "John Doe")
+# cursor.execute(insert_query,val)
+# connection.commit()
 
-    st.write(df)
+select_query = "SELECT * FROM farmer;"
+cursor.execute(select_query)
+
+rows = cursor.fetchall()
+for row in rows:
+    st.write(row)
+print("Success")
